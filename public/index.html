@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Allo Doc - Plateforme de Santé Intelligente</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        brand: {
+                            coral: '#FF6B4A',
+                            warm: '#FFFDF9',
+                            amber: '#FFB703',
+                            teal: '#1D3557',
+                            soft: '#F4F1DE'
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="bg-brand-warm text-brand-teal font-sans antialiased overflow-x-hidden">
+
+    <!-- CINÉMATIQUE D'INTRODUCTION (Fond blanc fixe pendant 3 secondes) -->
+    <div id="cinematic-intro" class="fixed inset-0 z-50 bg-white flex flex-col items-center justify-center transition-opacity duration-1000">
+        <div class="relative flex flex-col items-center">
+            <div class="w-24 h-24 bg-brand-coral/10 rounded-full flex items-center justify-center mb-6 animate-pulse">
+                <i class="fa-solid fa-stethoscope text-4xl text-brand-coral"></i>
+            </div>
+            <h1 class="text-3xl font-bold tracking-tight text-brand-teal mb-2">Allo Doc</h1>
+            <p class="text-sm text-gray-400 tracking-widest uppercase mb-8">Votre santé à portée de main</p>
+            <div class="w-48 h-1 bg-gray-100 rounded-full overflow-hidden">
+                <div id="intro-bar" class="h-full bg-brand-coral w-0 transition-all duration-[3000ms]"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- EN-TÊTE PRINCIPAL -->
+    <header class="bg-white border-b border-gray-100 sticky top-0 z-40 px-4 py-3 flex justify-between items-center shadow-sm">
+        <div class="flex items-center space-x-2">
+            <div class="w-9 h-9 bg-brand-coral rounded-xl flex items-center justify-center text-white font-bold">
+                <i class="fa-solid fa-heart-pulse"></i>
+            </div>
+            <span class="text-xl font-bold text-brand-teal">Allo Doc <span class="text-xs bg-brand-amber/20 text-amber-800 px-2 py-0.5 rounded-full font-normal">7 Jours d'essai gratuits</span></span>
+        </div>
+        <div class="flex items-center space-x-3">
+            <button onclick="processWaveCheckout()" class="bg-brand-coral text-white px-4 py-2 rounded-xl text-sm font-medium shadow-sm hover:opacity-95 transition">
+                <i class="fa-solid fa-crown mr-1"></i> Activer l'Abonnement (5€ / 2 sem)
+            </button>
+            <button onclick="replayIntro()" class="text-xs text-gray-500 bg-gray-100 px-3 py-2 rounded-xl hover:bg-gray-200">Revoir la cinématique</button>
+        </div>
+    </header>
+
+    <!-- CONTENEUR PRINCIPAL DU SAAS -->
+    <main class="max-w-6xl mx-auto p-4 md:p-6 grid grid-cols-1 lg:grid-cols-3 gap-6">
+
+        <!-- COLONNE GAUCHE & CENTRE : TABLEAU DE BORD & CONSULTATIONS -->
+        <div class="lg:col-span-2 space-y-6">
+            
+            <!-- Carte Bienvenue & Essai Gratuit -->
+            <div class="bg-gradient-to-r from-brand-coral/10 via-brand-amber/10 to-white p-6 rounded-3xl border border-orange-100 shadow-sm flex flex-col md:flex-row justify-between items-start md:items-center">
+                <div>
+                    <h2 class="text-2xl font-bold text-brand-teal mb-1">Bonjour, Dr. Amina Diop 👋</h2>
+                    <p class="text-sm text-gray-600">Votre période d'essai gratuit de 7 jours est active. Profitez de toutes les fonctionnalités.</p>
+                </div>
+                <button onclick="startTeleconsultation()" class="mt-4 md:mt-0 bg-brand-teal text-white px-5 py-3 rounded-2xl font-medium shadow-md hover:bg-opacity-90 transition flex items-center">
+                    <i class="fa-solid fa-video mr-2"></i> Nouvelle Consultation HD
+                </button>
+            </div>
+
+            <!-- Grille des Widgets -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                
+                <!-- Consultations à venir -->
+                <div class="bg-white p-5 rounded-3xl border border-gray-100 shadow-sm">
+                    <h3 class="font-bold text-lg mb-4 flex items-center justify-between">
+                        <span>Consultations à venir</span>
+                        <span class="text-xs bg-blue-50 text-brand-teal px-2 py-1 rounded-lg">2 aujourd'hui</span>
+                    </h3>
+                    <div class="space-y-3">
+                        <div class="p-3 bg-brand-warm rounded-2xl flex items-center justify-between">
+                            <div class="flex items-center space-x-3">
+                                <div class="w-10 h-10 bg-brand-coral/20 rounded-full flex items-center justify-center font-bold text-brand-coral">PD</div>
+                                <div>
+                                    <h4 class="font-semibold text-sm">Patient Diop</h4>
+                                    <p class="text-xs text-gray-500">16h30 • Suivi général</p>
+                                </div>
+                            </div>
+                            <button onclick="startTeleconsultation()" class="text-xs bg-brand-teal text-white px-3 py-1.5 rounded-xl">Démarrer</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Boîte de Réception & WhatsApp Direct -->
+                <div class="bg-white p-5 rounded-3xl border border-gray-100 shadow-sm flex flex-col justify-between">
+                    <div>
+                        <h3 class="font-bold text-lg mb-4 flex items-center justify-between">
+                            <span>Messages & WhatsApp</span>
+                            <i class="fa-brands fa-whatsapp text-green-500 text-xl"></i>
+                        </h3>
+                        <p class="text-xs text-gray-500 mb-4">Communiquez instantanément avec vos patients ou basculez vers votre canal professionnel WhatsApp.</p>
+                    </div>
+                    <a href="https://wa.me/?text=Bonjour%20Dr.%20Amina%20Diop,%20je%20vous%20contacte%20depuis%20Allo%20Doc." target="_blank" class="w-full bg-green-500 text-white py-3 rounded-2xl font-medium text-center flex items-center justify-center space-x-2 shadow-sm hover:bg-green-600 transition">
+                        <i class="fa-brands fa-whatsapp text-lg"></i>
+                        <span>Ouvrir WhatsApp Pro Direct</span>
+                    </a>
+                </div>
+
+            </div>
+
+            <!-- Module Géolocalisation : Pharmacies & Hôpitaux d'Urgence -->
+            <div class="bg-white p-6 rounded-3xl border border-gray-100 shadow-sm">
+                <div class="flex justify-between items-center mb-4">
+                    <h3 class="font-bold text-lg text-brand-teal flex items-center">
+                        <i class="fa-solid fa-location-dot text-brand-coral mr-2"></i> Gardes & Urgences à Proximité
+                    </h3>
+                    <button onclick="locateUser()" class="text-xs bg-orange-50 text-brand-coral font-semibold px-3 py-1.5 rounded-xl hover:bg-orange-100">
+                        <i class="fa-solid fa-crosshairs mr-1"></i> Actualiser GPS
+                    </button>
+                </div>
+                <p class="text-xs text-gray-500 mb-4">Détection automatique basée sur votre position pour trouver les pharmacies ouvertes 24h/24 et hôpitaux en cas d'urgence.</p>
+                <div id="geo-results" class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div class="p-4 bg-brand-warm rounded-2xl border border-gray-100">
+                        <div class="flex justify-between items-start mb-2">
+                            <h4 class="font-semibold text-sm">Pharmacie du Plateau 24/7</h4>
+                            <span class="text-[10px] bg-green-100 text-green-700 px-2 py-0.5 rounded-full font-medium">Ouvert</span>
+                        </div>
+                        <p class="text-xs text-gray-500 mb-3"><i class="fa-solid fa-road mr-1"></i> Avenue 12, à 450m</p>
+                        <a href="tel:+22500000000" class="text-xs bg-brand-teal text-white px-3 py-1.5 rounded-xl inline-flex items-center"><i class="fa-solid fa-phone mr-1"></i> Appeler d'urgence</a>
+                    </div>
+                    <div class="p-4 bg-brand-warm rounded-2xl border border-gray-100">
+                        <div class="flex justify-between items-start mb-2">
+                            <h4 class="font-semibold text-sm">Centre Hospitalier Universitaire</h4>
+                            <span class="text-[10px] bg-blue-100 text-brand-teal px-2 py-0.5 rounded-full font-medium">Urgences actives</span>
+                        </div>
+                        <p class="text-xs text-gray-500 mb-3"><i class="fa-solid fa-road mr-1"></i> Boulevard Principal, à 1.2km</p>
+                        <a href="tel:+22500000000" class="text-xs bg-brand-coral text-white px-3 py-1.5 rounded-xl inline-flex items-center"><i class="fa-solid fa-phone mr-1"></i> Ligne SOS</a>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- COLONNE DROITE : ABONNEMENT & PAIEMENT WAVE -->
+        <div class="space-y-6">
+            <div class="bg-white p-6 rounded-3xl border border-gray-100 shadow-sm">
+                <h3 class="font-bold text-lg mb-2 text-brand-teal">Mon Abonnement SaaS</h3>
+                <p class="text-xs text-gray-500 mb-6">Profitez de 7 jours gratuits, puis seulement 5 € (3 275 FCFA) toutes les 2 semaines.</p>
+
+                <!-- Carte résumé tarifaire -->
+                <div class="p-4 bg-brand-warm rounded-2xl mb-6 border border-orange-100">
+                    <div class="flex justify-between items-center mb-2">
+                        <span class="text-xs font-semibold text-gray-500">Statut actuel</span>
+                        <span class="text-xs bg-green-100 text-green-700 font-bold px-2 py-0.5 rounded-full">Essai Gratuit (7j)</span>
+                    </div>
+                    <div class="text-2xl font-black text-brand-teal mb-1">5 € <span class="text-xs font-normal text-gray-500">/ 2 semaines</span></div>
+                    <p class="text-[11px] text-gray-400">Prochain prélèvement après la période d'essai.</p>
+                </div>
+
+                <!-- Moyens de paiement -->
+                <div class="space-y-3 mb-6">
+                    <!-- Option Wave (Actif) -->
+                    <div class="p-4 rounded-2xl border-2 border-brand-coral bg-orange-50/50 flex items-center justify-between">
+                        <div class="flex items-center space-x-3">
+                            <div class="w-8 h-8 bg-blue-500 rounded-lg flex items-center text-white justify-center font-bold text-xs">W</div>
+                            <div>
+                                <h4 class="font-bold text-sm text-brand-teal">Wave Mobile Money</h4>
+                                <p class="text-[11px] text-gray-500">Paiement instantané par QR / téléphone</p>
+                            </div>
+                        </div>
+                        <i class="fa-solid fa-circle-check text-brand-coral text-lg"></i>
+                    </div>
+
+                    <!-- Options Bientôt disponibles -->
+                    <div class="p-4 rounded-2xl border border-gray-200 bg-gray-50 opacity-60 flex items-center justify-between">
+                        <div class="flex items-center space-x-3">
+                            <div class="w-8 h-8 bg-orange-400 rounded-lg flex items-center text-white justify-center font-bold text-xs">OM</div>
+                            <div>
+                                <h4 class="font-bold text-sm text-gray-700">Orange Money</h4>
+                                <p class="text-[11px] text-gray-400">Bientôt disponible</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="p-4 rounded-2xl border border-gray-200 bg-gray-50 opacity-60 flex items-center justify-between">
+                        <div class="flex items-center space-x-3">
+                            <div class="w-8 h-8 bg-yellow-500 rounded-lg flex items-center text-white justify-center font-bold text-xs">MTN</div>
+                            <div>
+                                <h4 class="font-bold text-sm text-gray-700">MTN MoMo</h4>
+                                <p class="text-[11px] text-gray-400">Bientôt disponible</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <button onclick="processWaveCheckout()" class="w-full bg-brand-coral text-white py-4 rounded-2xl font-bold shadow-md hover:opacity-95 transition flex items-center justify-center space-x-2">
+                    <span>Payer avec Wave (5€ / 2 sem)</span>
+                    <i class="fa-solid fa-arrow-right"></i>
+                </button>
+            </div>
+        </div>
+
+    </main>
+
+    <!-- SCRIPTS DE GESTION -->
+    <script>
+        window.addEventListener('DOMContentLoaded', () => {
+            const bar = document.getElementById('intro-bar');
+            setTimeout(() => { bar.style.width = '100%'; }, 100);
+            setTimeout(() => {
+                const intro = document.getElementById('cinematic-intro');
+                intro.style.opacity = '0';
+                setTimeout(() => { intro.style.display = 'none'; }, 1000);
+            }, 3200);
+        });
+
+        function replayIntro() {
+            const intro = document.getElementById('cinematic-intro');
+            const bar = document.getElementById('intro-bar');
+            bar.style.width = '0%';
+            intro.style.display = 'flex';
+            intro.style.opacity = '1';
+            setTimeout(() => { bar.style.width = '100%'; }, 100);
+            setTimeout(() => {
+                intro.style.opacity = '0';
+                setTimeout(() => { intro.style.display = 'none'; }, 1000);
+            }, 3200);
+        }
+
+        function startTeleconsultation() {
+            alert('Ouverture de la salle de téléconsultation haute définition HD...');
+        }
+
+        function locateUser() {
+            if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition(
+                    (position) => {
+                        alert("Position GPS détectée ! Recherche des pharmacies et hôpitaux à proximité...");
+                    },
+                    (error) => {
+                        alert("Affichage des pharmacies de garde à proximité (Mode secours).");
+                    }
+                );
+            } else {
+                alert("La géolocalisation n'est pas supportée par votre navigateur.");
+            }
+        }
+
+        function processWaveCheckout() {
+            fetch('/api/subscription/create-wave-checkout', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ userId: 'user_amina_diop', userPhone: '+22500000000' })
+            })
+            .then(res => res.json())
+            .then(data => {
+                alert(data.message || "Redirection vers le portail sécurisé Wave...");
+            })
+            .catch(err => {
+                alert("Erreur lors de l'initialisation Wave. Veuillez réessayer.");
+            });
+        }
+    </script>
+</body>
+  </html>
+  
