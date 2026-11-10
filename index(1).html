@@ -1,0 +1,390 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Allo Doc – Médecins, pharmacies et conseils santé</title>
+<meta name="description" content="Prenez rendez-vous, trouvez une pharmacie ouverte près de vous, consultez en vidéo.">
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@600;800&family=Figtree:wght@400;500;600&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js"></script>
+<style>
+:root{--sky:#38BDF8;--d:#0B7FCB;--dd:#0F2A5C;--l:#E6F3FD;--bg:#F3F8FD;--sf:#fff;--tx:#0F172A;--mu:#526077;--ln:#DCEAF7;--ok:#16A34A;--warn:#B45309;--sh:0 8px 24px rgba(15,42,92,.08);color-scheme:light}
+@media (prefers-color-scheme:dark){:root:not([data-theme=light]){--bg:#07212F;--sf:#0C2E42;--tx:#E8F6FF;--mu:#9CC3D9;--ln:#14506E;--l:#0F3A52;--d:#38BDF8;--dd:#7DD3FC;--warn:#FBBF24;color-scheme:dark}}
+:root[data-theme=dark]{--bg:#07212F;--sf:#0C2E42;--tx:#E8F6FF;--mu:#9CC3D9;--ln:#14506E;--l:#0F3A52;--d:#38BDF8;--dd:#7DD3FC;--warn:#FBBF24;color-scheme:dark}
+[hidden]{display:none!important}*{box-sizing:border-box}html{scroll-padding-top:70px}
+body{margin:0;background:var(--bg);color:var(--tx);font:16px/1.55 Figtree,system-ui,sans-serif;padding:env(safe-area-inset-top,0) 0 env(safe-area-inset-bottom,0)}
+h1,h2,h3{font-family:'Bricolage Grotesque',Figtree,sans-serif;line-height:1.1;margin:0;color:var(--dd)}
+button,input,select,textarea{font:inherit;color:var(--tx)}button{cursor:pointer}
+:focus-visible{outline:3px solid var(--d);outline-offset:2px}
+.w{max-width:1100px;margin:0 auto;padding:0 18px}
+header{position:sticky;top:0;z-index:20;background:var(--bg)}
+.bar{display:flex;align-items:center;justify-content:space-between;height:66px}
+.logo{display:flex;align-items:center;gap:8px;font:800 28px 'Bricolage Grotesque',sans-serif;color:var(--dd);letter-spacing:-.02em}
+.logo svg{width:24px;height:30px;color:var(--d)}
+.hr{display:flex;gap:10px;align-items:center}
+.ib{width:44px;height:44px;border-radius:50%;border:0;background:var(--sf);box-shadow:var(--sh);display:grid;place-items:center;color:var(--dd);font-weight:700}
+.ib svg{width:22px;height:22px}
+nav{position:fixed;left:0;right:0;bottom:0;z-index:30;background:var(--sf);border-top:1px solid var(--ln);display:grid;grid-template-columns:repeat(5,1fr);padding:0 4px env(safe-area-inset-bottom,0)}
+nav button{border:0;background:none;padding:11px 2px 8px;display:flex;flex-direction:column;align-items:center;gap:3px;color:var(--mu);font-size:12px;font-weight:600;position:relative}
+nav button svg{width:24px;height:24px}
+nav button[aria-current=true]{color:var(--d)}
+nav button[aria-current=true]::before{content:"";position:absolute;top:0;left:22%;right:22%;height:3px;border-radius:0 0 3px 3px;background:var(--d)}
+.hi{font:800 28px 'Bricolage Grotesque',sans-serif;color:var(--dd);margin:6px 0 2px}
+.dg{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:16px;margin-top:16px}
+.c-t{font:700 20px 'Bricolage Grotesque',sans-serif;color:var(--dd)}
+.blk{display:flex;flex-direction:column;gap:10px}.blk+.blk{border-top:1px solid var(--ln);padding-top:14px}
+.it{display:flex;gap:12px;align-items:center}
+.stk{display:flex;flex-direction:column;gap:14px}
+.st{display:flex;gap:12px;align-items:center}
+.st i{min-width:44px;height:44px;padding:0 8px;border-radius:14px;background:var(--l);display:grid;place-items:center;color:var(--dd);font:700 18px Figtree,sans-serif;font-style:normal}
+.big-btn{width:100%;padding:16px;font-size:18px;margin-top:16px}
+.mrow{display:flex;justify-content:space-between;align-items:center;width:100%;border:0;background:var(--l);border-radius:16px;padding:14px 16px;font-weight:600;color:var(--dd)}
+[hidden]+.x{}
+@media (prefers-color-scheme:dark){:root:not([data-theme=light]) .btn:not(.g),:root:not([data-theme=light]) .chip[aria-pressed=true],:root:not([data-theme=light]) .m.me{color:#042436}}
+:root[data-theme=dark] .btn:not(.g),:root[data-theme=dark] .chip[aria-pressed=true],:root[data-theme=dark] .m.me{color:#042436}
+.btn{border:0;border-radius:999px;padding:11px 18px;font-weight:600;background:var(--d);color:#fff}
+.btn.g{background:transparent;color:var(--dd);border:1.5px solid var(--ln)}
+.btn.s{padding:7px 12px;font-size:14px}.btn:disabled{opacity:.5}
+.banner{background:var(--d);color:#fff;text-align:center;padding:9px 14px;font-size:14px;font-weight:500}
+.banner a{color:#fff;font-weight:700}
+main{padding:10px 0 110px}.v{display:none}.v.on{display:block}
+.hero h1{font-size:clamp(30px,5vw,50px);font-weight:800;max-width:16ch}
+.hero p{color:var(--mu);max-width:52ch;margin:12px 0 20px;font-size:18px}
+.row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+.in{flex:1;min-width:150px;padding:11px 13px;border:1.5px solid var(--ln);border-radius:11px;background:var(--sf)}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(290px,1fr));gap:14px}
+.card{background:var(--sf);border:1px solid var(--ln);border-radius:22px;padding:18px;display:flex;flex-direction:column;gap:12px;box-shadow:var(--sh)}
+.card h3{font-size:18px}.mu{color:var(--mu);font-size:14px}
+.av{width:46px;height:46px;border-radius:50%;background:var(--l);color:var(--dd);display:grid;place-items:center;font-weight:700;flex:none}
+.tag{font-size:12.5px;background:var(--l);color:var(--dd);padding:2px 9px;border-radius:99px}
+.tag.ok{background:#DCFCE7;color:#166534}.tag.no{background:#FEE2E2;color:#991B1B}
+h2{font-size:clamp(24px,3.4vw,32px);margin:28px 0 14px}
+.chips{display:flex;gap:7px;flex-wrap:wrap;margin-bottom:14px}
+.chip{border:1.5px solid var(--ln);background:var(--sf);border-radius:99px;padding:6px 13px}
+.chip[aria-pressed=true]{background:var(--d);border-color:var(--d);color:#fff}
+.rk{display:grid;grid-template-columns:34px 1fr auto;gap:12px;align-items:center;padding:12px 14px;background:var(--sf);border:1px solid var(--ln);border-radius:14px;margin-bottom:8px}
+.rk b.n{width:34px;height:34px;border-radius:50%;background:var(--l);display:grid;place-items:center;color:var(--dd)}
+.rk:nth-child(-n+3) b.n{background:var(--d);color:#fff}
+.chat{background:var(--sf);border:1px solid var(--ln);border-radius:16px;display:flex;flex-direction:column;height:380px}
+.msgs{flex:1;overflow:auto;padding:14px;display:flex;flex-direction:column;gap:8px}
+.m{max-width:78%;padding:9px 13px;border-radius:14px;background:var(--l)}
+.m.me{align-self:flex-end;background:var(--d);color:#fff}
+.cols{display:grid;grid-template-columns:1.3fr 1fr;gap:16px}
+.pr{display:flex;justify-content:space-between;align-items:center;padding:9px 0;border-bottom:1px solid var(--ln)}
+.plans{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:14px}
+.plan.hl{border:2px solid var(--d)}.plan .big{font:800 32px 'Bricolage Grotesque';color:var(--dd)}
+.plan ul{padding-left:18px;margin:0;color:var(--mu)}
+.vid{width:100%;height:min(68vh,560px);border:0;border-radius:16px;background:#000}
+dialog{border:1px solid var(--ln);border-radius:18px;background:var(--sf);color:var(--tx);max-width:400px;width:92vw}
+dialog::backdrop{background:rgba(7,33,47,.6)}
+.toast{position:fixed;left:50%;bottom:calc(86px + env(safe-area-inset-bottom,0));transform:translate(-50%,30px);opacity:0;background:var(--dd);color:var(--bg);padding:12px 18px;border-radius:12px;font-weight:600;transition:.25s;z-index:60;max-width:90vw;text-align:center}
+.toast.on{opacity:1;transform:translate(-50%,0)}
+@media(max-width:760px){.cols{grid-template-columns:1fr}}
+@media(prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+</head>
+<body>
+<div class="banner" id="ban"></div>
+<header><div class="w bar">
+  <div class="logo"><svg viewBox="0 0 24 32" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><rect x="7" y="2" width="10" height="17" rx="5" fill="currentColor"/><path d="M3 14a9 9 0 0 0 18 0M12 23v6M8 29h8"/></svg>allo doc</div>
+  <div class="hr"><button class="ib" id="bell" aria-label="Messages"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9a6 6 0 0 1 12 0c0 6 2 7 2 7H4s2-1 2-7M10 20a2 2 0 0 0 4 0"/></svg></button><button class="ib" id="avBtn" aria-label="Mon profil">Moi</button></div>
+</div></header>
+
+<main class="w">
+<!-- MÉDECINS -->
+<section class="v" id="dash">
+  <div class="hi" id="hi">Bonjour !</div><p class="mu" style="margin:0">Voici votre tableau de bord.</p>
+  <div class="dg">
+    <div class="card"><div class="c-t">Consultations à venir</div><div class="stk" id="d-rdv"></div></div>
+    <div class="card"><div class="c-t">Messages</div><p class="mu" style="margin:0">Échangez avec vos médecins et vos pharmacies.</p><button class="btn" data-go="chat">Ouvrir la messagerie</button></div>
+    <div class="card"><div class="c-t">Pharmacies près de moi</div><p class="mu" style="margin:0">Trouvez une pharmacie ou un hôpital, même en voyage.</p><button class="btn" data-go="near">Voir autour de moi</button></div>
+    <div class="card"><div class="c-t">Mon activité</div><div class="stk" id="d-st"></div></div>
+    <div class="card"><div class="c-t">Prévention</div><div id="d-tip"></div><button class="btn g" data-go="prev">Tous les conseils</button></div>
+  </div>
+  <button class="btn big-btn" data-go="home">Nouvelle consultation</button>
+</section>
+
+<!-- AGENDA -->
+<section class="v" id="cal">
+  <h2 style="margin-top:0">Agenda</h2><div class="stk" id="rdv"></div>
+  <button class="btn big-btn" data-go="home">Nouvelle consultation</button>
+</section>
+
+<!-- PROFIL -->
+<section class="v" id="prof">
+  <h2 style="margin-top:0">Mon profil</h2>
+  <div class="card"><div class="it"><div class="av" id="pAv">?</div><div><b id="pNm">Invité</b><div class="mu" id="pRl">Non connecté</div></div></div><button class="btn" id="accBtn">Connexion</button></div>
+  <div class="card" style="margin-top:14px"><div class="c-t">Apparence</div><select class="in" id="theme"><option value="auto">Automatique (appareil)</option><option value="light">Clair</option><option value="dark">Sombre</option></select></div>
+  <div class="card" style="margin-top:14px;gap:8px">
+    <button class="mrow" data-go="plans">Tarifs et paiements <span>›</span></button>
+    <button class="mrow" data-go="chat">Messages <span>›</span></button>
+    <button class="mrow" data-go="prev">Prévention <span>›</span></button>
+    <button class="mrow" data-go="video">Appel vidéo <span>›</span></button>
+    <button class="mrow" data-go="rank">Classement régional <span>›</span></button>
+  </div>
+</section>
+
+<!-- MÉDECINS -->
+<section class="v" id="home">
+  <h2 style="margin-top:0">Nouvelle consultation</h2><p class="mu" style="margin:0 0 14px">Choisissez un médecin, réservez ou écrivez-lui directement.</p>
+  <div class="row"><input class="in" id="q" placeholder="Nom ou spécialité" aria-label="Rechercher"><button class="btn" onclick="renderDocs()">Rechercher</button></div>
+  <h2>Médecins disponibles</h2><div class="chips" id="chips"></div><div class="grid" id="docs"></div>
+  <button class="btn g" data-go="rank" style="margin-top:18px">Voir le classement régional</button>
+</section>
+
+<!-- AUTOUR DE MOI -->
+<section class="v" id="near">
+  <h2 style="margin-top:0">Pharmacies et hôpitaux près de vous</h2>
+  <div class="row">
+    <button class="btn" id="geo">Utiliser ma position</button>
+    <input class="in" id="city" placeholder="Ou une autre ville / un quartier (ex : Bouaké)" aria-label="Autre lieu">
+    <select class="in" id="kind" style="flex:none;min-width:130px"><option value="pharmacy">Pharmacies</option><option value="hospital">Hôpitaux et cliniques</option></select>
+    <button class="btn g" id="srch">Chercher</button>
+  </div>
+  <p class="mu" id="nst">Autorisez la géolocalisation pour voir les établissements les plus proches. Données : OpenStreetMap.</p>
+  <div class="grid" id="places"></div>
+</section>
+
+<!-- CLASSEMENT -->
+<section class="v" id="rank">
+  <button class="btn g s" onclick="history.length>1?history.back():show('dash')" style="margin:6px 0 8px">‹ Retour</button>
+  <h2 style="margin-top:0">Classement régional</h2>
+  <p class="mu">Les médecins et établissements sont classés par note des patients et délai de réponse, au sein de chaque région.</p>
+  <div class="chips" id="regs"></div><div id="rkl"></div>
+</section>
+
+<!-- MESSAGES + COMMANDE -->
+<section class="v" id="chat">
+  <button class="btn g s" onclick="history.length>1?history.back():show('dash')" style="margin:6px 0 8px">‹ Retour</button>
+  <h2 style="margin-top:0">Discuter et commander</h2>
+  <p class="mu">Contact : <b id="ctc">Pharmacie de la Riviera</b> (choisissez-en un autre depuis « Autour de moi »). Conversation simulée dans cette version.</p>
+  <div class="cols">
+    <div><div class="chat"><div class="msgs" id="msgs"></div>
+      <form class="row" id="cf" style="padding:10px;border-top:1px solid var(--ln)"><input class="in" id="ci" placeholder="Votre message" autocomplete="off"><button class="btn">Envoyer</button></form></div></div>
+    <div class="card"><h3>Médicaments et services</h3><div id="cat"></div>
+      <div class="pr"><b>Panier</b><b id="tot">0 FCFA</b></div><div class="mu" id="cart">Panier vide.</div>
+      <button class="btn" id="ord">Commander</button></div>
+  </div>
+</section>
+
+<!-- PRÉVENTION -->
+<section class="v" id="prev">
+  <button class="btn g s" onclick="history.length>1?history.back():show('dash')" style="margin:6px 0 8px">‹ Retour</button>
+  <div class="row" style="justify-content:space-between"><h2 style="margin:0">Prévention et conseils</h2>
+  <label class="row mu"><input type="checkbox" id="isDoc"> Je suis médecin</label></div>
+  <form class="card" id="pf" hidden style="margin:14px 0"><input class="in" id="pt" placeholder="Titre" required><textarea class="in" id="pb" rows="3" placeholder="Votre conseil" required></textarea><button class="btn">Publier</button></form>
+  <div class="grid" id="posts" style="margin-top:14px"></div>
+</section>
+
+<!-- VIDÉO -->
+<section class="v" id="video">
+  <button class="btn g s" onclick="history.length>1?history.back():show('dash')" style="margin:6px 0 8px">‹ Retour</button>
+  <h2 style="margin-top:0">Consultation vidéo</h2>
+  <p class="mu" id="vinfo">Choisissez un médecin pour démarrer l’appel (chiffré, via Jitsi).</p>
+  <div class="row" style="margin-bottom:12px"><select class="in" id="vdoc"></select><button class="btn" id="vgo">Démarrer l’appel</button></div>
+  <div id="vbox"></div>
+</section>
+
+<!-- TARIFS -->
+<section class="v" id="plans">
+  <button class="btn g s" onclick="history.length>1?history.back():show('dash')" style="margin:6px 0 8px">‹ Retour</button>
+  <h2 style="margin-top:0">Tarifs simples</h2>
+  <div class="plans">
+    <div class="card plan"><h3>Découverte</h3><div class="big">0 €</div><ul><li>Consultations gratuites pendant 3 jours</li><li>Recherche de pharmacies</li><li>Messages et prévention</li></ul><button class="btn g" data-p="free">Commencer</button></div>
+    <div class="card plan hl"><h3>Essai complet</h3><div class="big">0 €</div><ul><li>1 semaine offerte</li><li>Rendez-vous et appels vidéo illimités</li><li>Commandes en pharmacie</li></ul><button class="btn" data-p="trial">Démarrer l’essai</button></div>
+    <div class="card plan"><h3>Premium</h3><div class="big">2,5 €</div><ul><li>2 semaines d’accès complet</li><li>Tout de l’essai complet</li><li>Paiement mobile à brancher (Wave, Orange Money, Stripe)</li></ul><button class="btn g" data-p="paid">Choisir</button></div>
+  </div>
+</section>
+</main>
+<nav id="nav" aria-label="Navigation">
+  <button data-v="dash"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 11l9-8 9 8v9a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1z"/></svg>Accueil</button>
+  <button data-v="home"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="9" cy="8" r="3.5"/><path d="M2.5 20a6.5 6.5 0 0 1 13 0M16 4.5a3.5 3.5 0 0 1 0 7M18 14a6.5 6.5 0 0 1 3.5 6"/></svg>Médecins</button>
+  <button data-v="cal"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="5" width="18" height="16" rx="3"/><path d="M3 10h18M8 3v4M16 3v4"/></svg>Agenda</button>
+  <button data-v="near"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 21s7-6.2 7-11.5A7 7 0 0 0 5 9.5C5 14.8 12 21 12 21z"/><circle cx="12" cy="9.5" r="2.5"/></svg>Autour</button>
+  <button data-v="prof"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0 1 16 0"/></svg>Profil</button>
+</nav>
+
+<dialog id="dlg"><form method="dialog" class="card" style="border:0" id="bf">
+  <h3 id="dn"></h3><label class="mu">Jour<select class="in" id="dd"></select></label>
+  <label class="mu">Heure<select class="in" id="dh"></select></label>
+  <div class="row"><button class="btn" value="ok">Confirmer</button><button class="btn g" value="x">Annuler</button></div></form></dialog>
+<dialog id="auth"><div class="card" style="border:0">
+  <div id="au-out" hidden><h3 id="au-who"></h3><button class="btn" id="logout">Se déconnecter</button><button class="btn g" onclick="$('#auth').close()">Fermer</button></div>
+  <div id="au-in"><h3>Mon compte</h3>
+   <input class="in" id="em" type="email" placeholder="E-mail" autocomplete="email">
+   <input class="in" id="pw" type="password" placeholder="Mot de passe (8 caractères min.)" autocomplete="current-password">
+   <div class="row"><button class="btn" id="login">Se connecter</button><button class="btn g" onclick="$('#auth').close()">Fermer</button></div>
+   <details><summary class="mu">Pas de compte ? En créer un</summary>
+    <div class="card" style="border:0;padding:10px 0 0">
+     <input class="in" id="nm" placeholder="Nom complet" autocomplete="name">
+     <select class="in" id="ro"><option value="patient">Patient</option><option value="medecin">Médecin</option><option value="pharmacie">Pharmacie</option></select>
+     <div id="mf" hidden class="card" style="border:0;padding:0"><input class="in" id="sp" placeholder="Spécialité (ex : Pédiatre)"><input class="in" id="rg" placeholder="Région (ex : Abidjan)"><input class="in" id="qt" placeholder="Quartier"><input class="in" id="tf" type="number" min="0" placeholder="Tarif en FCFA"></div>
+     <button class="btn" id="signup">Créer mon compte</button></div></details>
+   <p class="mu" id="aum" role="alert"></p></div></div></dialog>
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+<script>
+const $=s=>document.querySelector(s),$$=s=>[...document.querySelectorAll(s)];
+const S={g(k,d){try{const v=localStorage.getItem('ad_'+k);return v?JSON.parse(v):d}catch(e){return d}},s(k,v){try{localStorage.setItem('ad_'+k,JSON.stringify(v))}catch(e){}}};
+const esc=t=>String(t??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const fc=n=>n.toLocaleString('fr-FR')+' FCFA';
+const ini=n=>n.replace(/^Dr /,'').split(' ').map(w=>w[0]).join('').slice(0,2).toUpperCase();
+function toast(m){const t=$('#toast');t.textContent=m;t.classList.add('on');setTimeout(()=>t.classList.remove('on'),3000)}
+
+/* ---------- Configuration Supabase : colle tes 2 valeurs entre les guillemets ---------- */
+const SUPABASE_URL='';
+const SUPABASE_KEY='';
+const sb=(SUPABASE_URL&&SUPABASE_KEY&&window.supabase)?window.supabase.createClient(SUPABASE_URL,SUPABASE_KEY):null;
+let me=null,ctcId=null,ctcName='',RV=[],PT=[];
+/* ---------- Données de démonstration (utilisées seulement si Supabase n’est pas configuré) ------------ Allo Doc : schéma Supabase (colle tout dans SQL Editor puis clique Run)
+
+create table profiles (
+  id uuid primary key references auth.users on delete cascade,
+  nom text not null,
+  role text not null default 'patient' check (role in ('patient','medecin','pharmacie')),
+  plan text default 'free' check (plan in ('free','trial','paid')),
+  plan_debut timestamptz default now(),
+  created_at timestamptz default now()
+);
+
+create table medecins (
+  id uuid primary key references profiles(id) on delete cascade,
+  specialite text not null,
+  region text not null,
+  quartier text,
+  tarif int default 0,
+  note numeric(2,1) default 0,
+  delai_min int default 30,
+  verifie boolean default false  -- tu valides le diplôme à la main avant de passer à true
+);
+
+create table rendez_vous (
+  id bigint generated always as identity primary key,
+  patient_id uuid not null references profiles(id) on delete cascade,
+  medecin_id uuid not null references medecins(id) on delete cascade,
+  date_rdv timestamptz not null,
+  statut text default 'confirme' check (statut in ('confirme','annule','termine')),
+  created_at timestamptz default now()
+);
+
+create table messages (
+  id bigint generated always as identity primary key,
+  de uuid not null references profiles(id) on delete cascade,
+  a uuid not null references profiles(id) on delete cascade,
+  texte text not null,
+  created_at timestamptz default now()
+);
+
+create table commandes (
+  id bigint generated always as identity primary key,
+  patient_id uuid not null references profiles(id) on delete cascade,
+  pharmacie_id uuid not null references profiles(id) on delete cascade,
+  articles jsonb not null,
+  total int not null,
+  statut text default 'envoyee' check (statut in ('envoyee','prete','livree','annulee')),
+  created_at timestamptz default now()
+);
+
+create table conseils (
+  id bigint generated always as identity primary key,
+  medecin_id uuid not null references medecins(id) on delete cascade,
+  titre text not null,
+  corps text not null,
+  created_at timestamptz default now()
+);
+
+-- Création automatique du profil à l'inscription
+create function public.nouveau_profil() returns trigger language plpgsql security definer as $$
+begin
+  insert into profiles (id, nom) values (new.id, coalesce(new.raw_user_meta_data->>'nom','Utilisateur'));
+  return new;
+end $$;
+create trigger a_l_inscription after insert on auth.users for each row execute function public.nouveau_profil();
+
+-- Sécurité : chacun ne voit que ses données
+alter table profiles enable row level security;
+alter table medecins enable row level security;
+alter table rendez_vous enable row level security;
+alter table messages enable row level security;
+alter table commandes enable row level security;
+alter table conseils enable row level security;
+
+create policy "profil perso" on profiles for select using (auth.uid() = id);
+create policy "profil modif" on profiles for update using (auth.uid() = id) with check (role = (select role from profiles where id = auth.uid()));
+create policy "medecins verifies visibles" on medecins for select using (verifie = true or auth.uid() = id);
+create policy "medecin modif" on medecins for update using (auth.uid() = id) with check (verifie = (select verifie from medecins where id = auth.uid()));
+create policy "rdv lecture" on rendez_vous for select using (auth.uid() in (patient_id, medecin_id));
+create policy "rdv creation" on rendez_vous for insert with check (auth.uid() = patient_id);
+create policy "rdv maj" on rendez_vous for update using (auth.uid() in (patient_id, medecin_id));
+create policy "msg lecture" on messages for select using (auth.uid() in (de, a));
+create policy "msg envoi" on messages for insert with check (auth.uid() = de);
+create policy "cmd lecture" on commandes for select using (auth.uid() in (patient_id, pharmacie_id));
+create policy "cmd creation" on commandes for insert with check (auth.uid() = patient_id);
+create policy "cmd maj" on commandes for update using (auth.uid() = pharmacie_id);
+create policy "conseils publics" on conseils for select using (true);
+create policy "conseils medecin" on conseils for insert with check (
+  auth.uid() = medecin_id and exists (select 1 from medecins where id = auth.uid() and verifie = true));
+
+-- ===== Ajouts v2 (déjà inclus dans ce fichier : colle tout en une seule fois) =====
+create or replace function public.nouveau_profil() returns trigger language plpgsql security definer set search_path = public as $$
+declare r text := case when new.raw_user_meta_data->>'role' in ('medecin','pharmacie') then new.raw_user_meta_data->>'role' else 'patient' end;
+begin
+  insert into profiles (id, nom, role)
+  values (new.id, coalesce(nullif(trim(new.raw_user_meta_data->>'nom'),''),'Utilisateur'), r);
+  if r = 'medecin' then
+    insert into medecins (id, specialite, region, quartier, tarif)
+    values (new.id,
+      coalesce(nullif(new.raw_user_meta_data->>'specialite',''),'Généraliste'),
+      coalesce(nullif(new.raw_user_meta_data->>'region',''),'Abidjan'),
+      new.raw_user_meta_data->>'quartier',
+      coalesce(nullif(new.raw_user_meta_data->>'tarif','')::int,0));
+  end if;
+  return new;
+end $$;
+
+-- Les médecins vérifiés et les personnes en contact avec toi sont visibles
+create policy "profils medecins visibles" on profiles for select
+  using (exists (select 1 from medecins m where m.id = profiles.id and m.verifie));
+create policy "profils contacts" on profiles for select using (
+  exists (select 1 from rendez_vous r where (r.medecin_id = auth.uid() and r.patient_id = profiles.id)
+                                          or (r.patient_id = auth.uid() and r.medecin_id = profiles.id))
+  or exists (select 1 from messages m where (m.a = auth.uid() and m.de = profiles.id)
+                                          or (m.de = auth.uid() and m.a = profiles.id)));
+
+-- Impossible de réserver deux fois le même créneau
+create unique index un_creneau on rendez_vous (medecin_id, date_rdv) where statut = 'confirme';
+
+-- Un utilisateur ne peut passer de "free" à "trial" qu'une seule fois (jamais à "paid")
+create function public.garde_plan() returns trigger language plpgsql as $$
+begin
+  if auth.uid() is not null and (new.plan is distinct from old.plan or new.plan_debut is distinct from old.plan_debut) then
+    if not (old.plan = 'free' and new.plan = 'trial') then
+      raise exception 'Changement de formule non autorisé';
+    end if;
+  end if;
+  return new;
+end $$;
+create trigger garde_plan before update on profiles for each row execute function public.garde_plan();
+# Allo Doc
+
+Application de santé : rendez-vous, appels vidéo, pharmacies à proximité, classement régional, messages et commandes, conseils de prévention.
+
+## Publier sur GitHub Pages
+
+1. Crée un dépôt GitHub nommé `allo-doc`.
+2. Ajoute `index.html` et `README.md` à la racine, puis commit.
+3. Dépôt → **Settings** → **Pages** → Source : `main` / `(root)` → **Save**.
+4. Ton site sera sur `https://TON-PSEUDO.github.io/allo-doc/`.
+
+La géolocalisation et la vidéo exigent HTTPS : GitHub Pages le fournit.
+
+## Ce qui fonctionne déjà
+
+- Thème automatique, clair ou sombre (⚙ en haut à droite)
+- Pharmacies et hôpitaux proches (OpenStreetMap), recherche d’une autre ville
+- Appels vidéo réels (Jitsi)
+- Offre : 3 jours gratuits, 1 semaine d’essai, 2,5 € pour 2 semaines
+
+## Prochaines étapes (backend)
+
+Les données (médecins, messages, rendez-vous) sont dans le navigateur. Pour la vraie version : Supabase (comptes, base de données, messagerie en temps réel) et un paiement mobile (Wave, Orange Money ou Stripe).
