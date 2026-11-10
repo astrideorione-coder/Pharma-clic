@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pharma-clic | Santé & Urgences en un clic</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+</head>
+<body class="bg-slate-950 text-slate-100 font-sans antialiased selection:bg-emerald-500 selection:text-white">
+
+    <!-- Cinematic Intro Overlay -->
+    <div id="intro-screen" class="fixed inset-0 z-50 bg-slate-950 flex flex-col items-center justify-center transition-opacity duration-1000">
+        <div class="relative flex items-center justify-center">
+            <div class="absolute w-32 h-32 bg-emerald-500/20 rounded-full animate-ping"></div>
+            <div class="w-24 h-24 bg-emerald-600 rounded-2xl flex items-center shadow-2xl shadow-emerald-500/40 items-center justify-center text-4xl">
+                <i class="fa-solid fa-staff-snake text-white"></i>
+            </div>
+        </div>
+        <h1 class="text-3xl font-extrabold tracking-wider mt-8 bg-gradient-to-r from-emerald-400 to-teal-200 bg-clip-text text-transparent">PHARMA-CLIC</h1>
+        <p class="text-xs tracking-widest text-slate-400 uppercase mt-2">Plateforme e-Santé Intelligente</p>
+    </div>
+
+    <!-- Main App Container -->
+    <div id="app-container" class="max-w-md mx-auto min-h-screen flex flex-col bg-slate-900 border-x border-slate-800 shadow-2xl">
+        
+        <!-- Top Header -->
+        <header class="p-4 border-b border-slate-800 flex justify-between items-center bg-slate-900/80 backdrop-blur sticky top-0 z-30">
+            <div class="flex items-center space-x-3">
+                <div class="w-10 h-10 rounded-xl bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center text-emerald-400">
+                    <i class="fa-solid fa-heart-pulse"></i>
+                </div>
+                <div>
+                    <h2 class="font-bold text-sm text-white">Pharma-clic</h2>
+                    <span class="inline-flex items-center text-[10px] text-emerald-400 font-medium">
+                        <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse mr-1.5"></span> En ligne (Abidjan)
+                    </span>
+                </div>
+            </div>
+            <a href="https://wa.me/+22500000000?text=Bonjour%20Pharma-clic,%20j'ai%20besoin%20d'une%20assistance" target="_blank" class="w-10 h-10 rounded-full bg-emerald-600/20 border border-emerald-500/30 flex items-center justify-center text-emerald-400 hover:bg-emerald-600 hover:text-white transition-all">
+                <i class="fa-brands fa-whatsapp text-lg"></i>
+            </a>
+        </header>
+
+        <!-- Main Scrollable Content -->
+        <main class="flex-1 p-4 space-y-6 pb-24">
+            
+            <!-- SOS Emergency Alert Banner -->
+            <div class="relative overflow-hidden rounded-2xl bg-gradient-to-br from-rose-500/20 via-rose-600/10 to-transparent border border-rose-500/30 p-5">
+                <div class="absolute -right-4 -bottom-4 text-rose-500/10 text-8xl pointer-events-none">
+                    <i class="fa-solid fa-triangle-exclamation"></i>
+                </div>
+                <div class="relative z-10">
+                    <span class="px-2.5 py-1 rounded-full bg-rose-500/20 text-rose-400 text-[10px] font-bold uppercase tracking-wider border border-rose-500/30">Urgence Médicale</span>
+                    <h3 class="text-lg font-bold text-white mt-2">Besoin d'un secours immédiat ?</h3>
+                    <p class="text-xs text-slate-300 mt-1 leading-relaxed">Géolocalisation d'urgence et pharmacies de garde connectées en direct.</p>
+                    <button onclick="triggerSOS()" class="mt-4 w-full py-3 bg-rose-600 hover:bg-rose-500 text-white font-bold rounded-xl text-sm shadow-lg shadow-rose-600/30 transition-all flex items-center justify-center space-x-2">
+                        <i class="fa-solid fa-bell text-xs"></i>
+                        <span>Lancer une Urgence SOS</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Services Quick Actions -->
+            <div class="grid grid-cols-2 gap-3">
+                <button onclick="openModal('teleconsultation')" class="p-4 rounded-2xl bg-slate-800/60 border border-slate-700/50 hover:border-emerald-500/40 text-left transition-all group">
+                    <div class="w-10 h-10 rounded-xl bg-emerald-500/10 flex items-center justify-center text-emerald-400 mb-3 group-hover:scale-110 transition-transform">
+                        <i class="fa-solid fa-video"></i>
+                    </div>
+                    <h4 class="font-bold text-sm text-white">Téléconsultation</h4>
+                    <p class="text-[11px] text-slate-400 mt-0.5">Médecin en 3 min</p>
+                </button>
+
+                <button onclick="openModal('pharmacy')" class="p-4 rounded-2xl bg-slate-800/60 border border-slate-700/50 hover:border-emerald-500/40 text-left transition-all group">
+                    <div class="w-10 h-10 rounded-xl bg-teal-500/10 flex items-center justify-center text-teal-400 mb-3 group-hover:scale-110 transition-transform">
+                        <i class="fa-solid fa-pills"></i>
+                    </div>
+                    <h4 class="font-bold text-sm text-white">Pharmacies Garde</h4>
+                    <p class="text-[11px] text-slate-400 mt-0.5">Disponibilité stock</p>
+                </button>
+            </div>
+
+            <!-- Prescription Upload Section -->
+            <div class="rounded-2xl bg-slate-800/40 border border-slate-800 p-4">
+                <h4 class="font-bold text-sm text-white mb-2 flex items-center space-x-2">
+                    <i class="fa-solid fa-file-prescription text-emerald-400"></i>
+                    <span>Validation d'Ordonnance</span>
+                </h4>
+                <p class="text-xs text-slate-400 mb-3">Envoyez une photo de votre ordonnance pour vérification instantanée par un pharmacien.</p>
+                <label class="flex flex-col items-center justify-center border-2 border-dashed border-slate-700 hover:border-emerald-500/50 rounded-xl p-4 cursor-pointer bg-slate-900/50 transition-all">
+                    <i class="fa-solid fa-cloud-arrow-up text-xl text-emerald-400 mb-1"></i>
+                    <span class="text-xs font-medium text-slate-300">Importer l'ordonnance</span>
+                    <span class="text-[10px] text-slate-500 mt-0.5">PNG, JPG ou PDF</span>
+                    <input type="file" class="hidden" onchange="handleFileUpload(event)">
+                </label>
+            </div>
+
+            <!-- Subscription & Mobile Money Checkout -->
+            <div class="rounded-2xl bg-gradient-to-br from-emerald-950/40 to-slate-900 border border-emerald-500/20 p-5">
+                <div class="flex justify-between items-start">
+                    <div>
+                        <span class="text-[10px] font-bold text-emerald-400 tracking-wider uppercase bg-emerald-500/10 px-2 py-0.5 rounded">Formule Premium</span>
+                        <h4 class="font-bold text-base text-white mt-1">Pass Santé Illimité</h4>
+                    </div>
+                    <div class="text-right">
+                        <span class="text-lg font-extrabold text-white">5 000</span>
+                        <span class="text-xs text-slate-400">FCFA/mois</span>
+                    </div>
+                </div>
+                <ul class="mt-4 space-y-2 text-xs text-slate-300">
+                    <li class="flex items-center space-x-2"><i class="fa-solid fa-check text-emerald-400 text-xs"></i><span>Consultations 24/7 sans attente</span></li>
+                    <li class="flex items-center space-x-2"><i class="fa-solid fa-check text-emerald-400 text-xs"></i><span>Livraison de médicaments prioritaire</span></li>
+                </ul>
+                <button onclick="payWithWave()" class="mt-5 w-full py-3 bg-sky-500 hover:bg-sky-400 text-slate-950 font-bold rounded-xl text-sm transition-all shadow-lg shadow-sky-500/20 flex items-center justify-center space-x-2">
+                    <i class="fa-solid fa-bolt"></i>
+                    <span>Payer avec Wave Mobile Money</span>
+                </button>
+            </div>
+
+        </main>
+
+        <!-- Bottom Navigation Bar -->
+        <nav class="fixed bottom-0 max-w-md w-full bg-slate-900/90 backdrop-blur border-t border-slate-800 p-3 flex justify-around items-center z-30">
+            <button class="flex flex-col items-center text-emerald-400"><i class="fa-solid fa-house text-sm"><span>Accueil</span></i></button>
+            <button onclick="openModal('pharmacy')" class="flex flex-col items-center text-slate-400 hover:text-emerald-400"><i class="fa-solid fa-map-location-dot text-sm"><span>Pharmacies</span></i></button>
+            <button onclick="openModal('teleconsultation')" class="flex flex-col items-center text-slate-400 hover:text-emerald-400"><i class="fa-solid fa-stethoscope text-sm"><span>Docteurs</span></i></button>
+            <button onclick="openModal('profile')" class="flex flex-col items-center text-slate-400 hover:text-emerald-400"><i class="fa-solid fa-user text-sm"><span>Profil</span></i></button>
+        </nav>
+
+    </div>
+
+    <!-- Simple Feedback Modal -->
+    <div id="app-modal" class="fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-sm hidden flex items-center justify-center p-4">
+        <div class="bg-slate-900 border border-slate-800 rounded-2xl p-6 max-w-xs w-full text-center relative shadow-2xl">
+            <h3 id="modal-title" class="text-base font-bold text-white mb-2">Notification</h3>
+            <p id="modal-desc" class="text-xs text-slate-300 mb-5">Action en cours de traitement...</p>
+            <button onclick="closeModal()" class="w-full py-2.5 bg-emerald-600 text-white font-bold rounded-xl text-xs">Fermer</button>
+        </div>
+    </div>
+
+    <!-- App Logic Scripts -->
+    <script>
+        // Hide cinematic intro after 1.5 seconds
+        setTimeout(() => {
+            const intro = document.getElementById('intro-screen');
+            intro.style.opacity = '0';
+            setTimeout(() => intro.remove(), 1000);
+        }, 1500);
+
+        function openModal(type) {
+            const modal = document.getElementById('app-modal');
+            const title = document.getElementById('modal-title');
+            const desc = document.getElementById('modal-desc');
+            
+            if(type === 'teleconsultation') {
+                title.innerText = "Téléconsultation Instantanée";
+                desc.innerText = "Mise en relation sécurisée avec un médecin généraliste disponible immédiatement.";
+            } else if(type === 'pharmacy') {
+                title.innerText = "Pharmacies de Garde";
+                desc.innerText = "Recherche des officines ouvertes dans votre secteur géographique en cours...";
+            } else {
+                title.innerText = "Espace Utilisateur";
+                desc.innerText = "Gestion de votre dossier médical personnel et de vos abonnements.";
+            }
+            modal.classList.remove('hidden');
+        }
+
+        function closeModal() {
+            document.getElementById('app-modal').classList.add('hidden');
+        }
+
+        function triggerSOS() {
+            alert("Alerte SOS transmise aux services d'urgence et aux pharmacies partenaires les plus proches !");
+        }
+
+        function handleFileUpload(event) {
+            if(event.target.files.length > 0) {
+                alert("Ordonnance transmise avec succès pour validation !");
+            }
+        }
+
+        function payWithWave() {
+            alert("Redirection vers l'interface de paiement sécurisée Wave Mobile Money...");
+        }
+    </script>
+</body>
+</html>
